@@ -21,3 +21,12 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles' 
+        
+# creating user profile 
+
+def create_user_profile(sender, instance, created, **kwargs):
+        if created:Profile.objects.create(user=instance)
+# saving user profile
+
+def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
