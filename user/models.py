@@ -34,7 +34,7 @@ def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
         
 # project attributes
-class Projects(models.Models):
+class Projects(models.Model):
     project_title = models.CharField(max_length=255)
     project_image = CloudinaryField('images')
     project_description = models.TextField()
