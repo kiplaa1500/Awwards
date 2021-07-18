@@ -10,7 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
+import dj_database_url
+from decouple import config, Csv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import django_heroku
 from pathlib import Path
+
+
+cloudinary.config( 
+  cloud_name = "dqvarhwzn", 
+  api_key = "811246556949398", 
+  api_secret = "YE5NEj5BxfH8Uezhhx1MgbYSoqU",
+  secure = True
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
