@@ -82,3 +82,41 @@ class ProfileList(APIView):
         all_merch = Profile.objects.all()
         serializers = ProfileSerializer(all_merch, many=True)
         return Response(serializers.data)
+# search projects 
+@login_required(login_url='/accounts/login/')
+def search_projects(request):
+    if 'keyword' in request.GET and request.GET["keyword"]:
+        search_term = request.GET.get("keyword")
+        searched_projects = Projects.search_projects(search_term)
+        message = f"{search_term}"
+
+        return render(request, 'search.html', {"message":message,"projects": searched_projects})
+
+    else:
+        message = "You haven't searched for any term"
+        return render(request, 'search.html', {"message": message})
+# user profile
+@login_required(login_url='/accounts/login/')
+def user_profiles(request):
+    current_user = request.user
+    author = current_user
+    profile = Profile.objects.filter(user=current_user).first()
+    # user_profile = Profile.objects.get(user=request.user)
+    projects = Projects.get_by_author(author)
+    
+    
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            # form.save(commit=False)
+            form.save()
+        return redirect('profile')
+        
+    else:
+        form = ProfileUpdateForm() 
+        context ={"form":form,
+         "projects":projects,
+         "profile": profile
+         }  
+    return render(request, 'django_registration/profile.html', context)
+
