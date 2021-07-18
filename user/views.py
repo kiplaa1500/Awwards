@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.http  import HttpResponse,Http404,HttpResponseRedirect
 import datetime as dt
 from .models import *
+from .forms import *
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -20,7 +22,7 @@ def get_project_by_id(request, id):
         raise Http404()    
     
     return render(request, "project.html", {"project":project})
-# view funtion to create new project
+# view funtion to post new project
 @login_required(login_url='/accounts/login/')
 def new_project(request):
     current_user = request.user
