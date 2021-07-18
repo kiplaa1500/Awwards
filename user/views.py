@@ -4,6 +4,8 @@ import datetime as dt
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from rest_framework import status
+from .permissions import IsAdminOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializer import *
@@ -48,3 +50,35 @@ class ProjectsList(APIView):
         serializers = ProjectsSerializer(all_merch, many=True)
         return Response(serializers.data)
     
+class ProjectsDescription(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    def get_projects(self, pk):
+        try:
+            return Projects.objects.get(pk=pk)
+        except Projects.DoesNotExist:
+            return Http404
+        
+    def get(self, request, pk, format=None):
+        project = self.get_projects(pk)
+        serializers = ProjectsSerializer(project)
+        return Response(serializers.data)
+    
+    def put(self, request, pk, format=None):
+        project = self.get_projects(pk)
+        serializers = ProjectsSerializer(project, request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        else:
+            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        project = self.get_projects(pk)
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class ProfileList(APIView):
+    def get(self, request, format=None):
+        all_merch = Profile.objects.all()
+        serializers = ProfileSerializer(all_merch, many=True)
+        return Response(serializers.data)
