@@ -4,6 +4,10 @@ import datetime as dt
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializer import *
+
 
 # Create your views here.
 
@@ -38,3 +42,9 @@ def new_project(request):
         form = NewProjectForm()
     return render(request, 'new_project.html', {"form":form})
 
+class ProjectsList(APIView):
+    def get(self, request, format=None):
+        all_merch = Projects.objects.all()
+        serializers = ProjectsSerializer(all_merch, many=True)
+        return Response(serializers.data)
+    
