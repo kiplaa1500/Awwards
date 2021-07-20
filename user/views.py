@@ -101,7 +101,7 @@ def user_profiles(request):
     current_user = request.user
     author = current_user
     profile = Profile.objects.filter(user=current_user).first()
-    user_profile = Profile.objects.get(user=request.user)
+    # user_profile = Profile.objects.get(user=request.user)
     projects = Projects.get_by_author(author)
     
     
